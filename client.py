@@ -15,14 +15,15 @@ def receive(sock):
     while True:
 
         try:
-            msg = sock.recv(1024).decode()
+            msg = sock.recv(1024)
 
             if not msg:
                 break
 
-            print("\n" + msg)
+            print("\n" + msg.decode())
 
         except:
+            print("\nConnection closed by server")
             break
 
 
@@ -32,7 +33,11 @@ def main():
 
     secure_sock = context.wrap_socket(sock, server_hostname=HOST)
 
-    secure_sock.connect((HOST, PORT))
+    try:
+        secure_sock.connect((HOST, PORT))
+    except:
+        print("Cannot connect to server")
+        return
 
     prompt = secure_sock.recv(1024).decode()
     username = input(prompt)
@@ -44,10 +49,16 @@ def main():
     while True:
 
         try:
+
             bid = input("\nEnter bid amount: ")
+
+            if bid.strip() == "":
+                continue
+
             secure_sock.send(bid.encode())
 
         except:
+            print("Disconnected")
             break
 
 
