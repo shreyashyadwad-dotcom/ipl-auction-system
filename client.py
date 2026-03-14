@@ -33,5 +33,5 @@ secure.send(team.encode())
 threading.Thread(target=receive,args=(secure,),daemon=True).start()
 
 while True:
-    bid=input("Enter bid: ")
+    bid=input()
     secure.send(bid.encode())
