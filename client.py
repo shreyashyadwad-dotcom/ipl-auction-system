@@ -2,64 +2,36 @@ import socket
 import ssl
 import threading
 
-HOST = "127.0.0.1"
-PORT = 5000
+HOST="127.0.0.1"
+PORT=5000
 
-context = ssl.create_default_context()
-context.check_hostname = False
-context.verify_mode = ssl.CERT_NONE
-
+context=ssl.create_default_context()
+context.check_hostname=False
+context.verify_mode=ssl.CERT_NONE
 
 def receive(sock):
 
     while True:
-
         try:
-            msg = sock.recv(1024)
-
+            msg=sock.recv(1024)
             if not msg:
                 break
-
-            print("\n" + msg.decode())
-
+            print(msg.decode())
         except:
-            print("\nConnection closed by server")
             break
 
+sock=socket.socket()
+secure=context.wrap_socket(sock,server_hostname=HOST)
 
-def main():
+secure.connect((HOST,PORT))
 
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+prompt=secure.recv(1024).decode()
+team=input(prompt)
 
-    secure_sock = context.wrap_socket(sock, server_hostname=HOST)
+secure.send(team.encode())
 
-    try:
-        secure_sock.connect((HOST, PORT))
-    except:
-        print("Cannot connect to server")
-        return
+threading.Thread(target=receive,args=(secure,),daemon=True).start()
 
-    prompt = secure_sock.recv(1024).decode()
-    username = input(prompt)
-
-    secure_sock.send(username.encode())
-
-    threading.Thread(target=receive, args=(secure_sock,), daemon=True).start()
-
-    while True:
-
-        try:
-
-            bid = input("\nEnter bid amount: ")
-
-            if bid.strip() == "":
-                continue
-
-            secure_sock.send(bid.encode())
-
-        except:
-            print("Disconnected")
-            break
-
-
-main()
+while True:
+    bid=input("Enter bid: ")
+    secure.send(bid.encode())

@@ -1,79 +1,119 @@
-# Secure TCP Auction System
+PESU IPL Auction System (Secure TCP Socket Project)
+Project Overview
 
-## Project Overview
-This project implements a secure online auction system using TCP socket programming with SSL/TLS encryption. Multiple clients connect to a central auction server and place bids in real time.
+This project implements a secure real-time IPL-style player auction system using TCP socket programming with SSL/TLS encryption.
 
-## Features
-- TCP socket communication
-- SSL/TLS encrypted connections
-- Multiple concurrent clients
-- Real-time bid broadcasting
-- Auction winner determination
-- Bid history tracking
+Multiple clients represent IPL teams, while the server acts as the auctioneer. Teams bid on players in real time until the bidding timeout expires. The system automatically assigns players to the highest bidder or marks them unsold.
 
-## Architecture
+The auction supports multiple teams, budgets, player statistics, and fairness constraints similar to the real IPL auction process.
 
-Client → TCP + TLS → Auction Server
+# Features
+Secure Communication
 
-Multiple clients connect concurrently and submit bids.
+All communication between server and clients uses SSL/TLS encryption to ensure secure data exchange.
 
-## Technologies Used
-- Python
-- TCP Sockets
-- SSL/TLS Encryption
-- Multithreading
+TCP Socket Programming
 
-## How to Run
+The system uses low-level TCP sockets for communication between server and team clients.
 
-### 1. Generate SSL certificate
-openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem
+Real-Time Bidding
 
+Teams can place bids on players in real time.
 
-### 2. Start server
+Player Auction System
 
-python3 server.py
+100 IPL players included in the system
 
+Players auctioned sequentially
 
+Player statistics displayed before bidding begins
 
+Team Management
 
-### 3. Start clients
+4 teams participate in the auction
 
-python3 client.py
+Each team has a budget of ₹2 Crore
 
+Each team can buy maximum 11 players
 
-Run multiple clients in different terminals.
+Player Types
 
-## Example Output
+Players are categorized as:
 
-NEW HIGHEST BID: 200 by Alice
+Batsman
 
+Bowler
 
-## Concepts Demonstrated
-- TCP Socket Programming
-- Secure Communication (SSL/TLS)
-- Client–Server Architecture
-- Concurrent Client Handling
+Allrounder
 
-# Project Structure
-secure-auction-socket-project
+Player Statistics
+
+Depending on player type, statistics include:
+
+Runs and batting average
+
+Wickets and economy rate
+
+Runs and wickets for allrounders
+
+Auction Constraints
+
+Minimum bid must be greater than current highest bid
+
+Teams cannot exceed budget
+
+Teams cannot exceed player limit
+
+Time-Critical Bidding
+
+Each player auction has a bid timeout.
+If no new bid is received within the timeout period, the player is sold to the highest bidder.
+
+Unsold Players
+
+Players with no bids are automatically marked UNSOLD.
+
+Concurrent Client Handling
+
+Multiple teams connect simultaneously using multithreading.
+
+System Architecture
+              Auction Server
+                    |
+      ---------------------------------
+      |        |        |        |
+     RCB      CSK       MI      KKR
+   (Client)  (Client) (Client) (Client)
+
+Each client maintains a secure TCP connection with the server.
+
+Technologies Used
+
+Python
+
+TCP Socket Programming
+
+SSL/TLS Encryption
+
+Multithreading
+
+Project Structure
+auction_project/
 │
-├── server.py        # Secure auction server
-├── client.py        # Auction client
+├── server.py        # Auction server
+├── client.py        # Team client
 ├── cert.pem         # SSL certificate
-├── key.pem          # SSL private key
+├── key.pem          # SSL key
 └── README.md
-
-
-# Setup Instructions
-
+Setup Instructions
 1 Install Python
 
-Ensure Python 3 is installed.
+Ensure Python 3 is installed:
 
 python3 --version
 2 Generate SSL Certificates
 
-Run this command in the project directory:
+Run the following command in the project directory:
 
 openssl req -new -x509 -days 365 -nodes -out cert.pem -keyout key.pem
 
@@ -81,102 +121,77 @@ This generates:
 
 cert.pem
 key.pem
-
-These enable TLS encrypted communication.
-
 3 Start the Server
+
+Run:
+
 python3 server.py
 
 Example output:
 
-Secure Auction Server Started
-Item: Laptop
-Auction Duration: 60 seconds
-4 Start Clients
+PESU IPL Auction Server Started
+Press ENTER when teams connected
+4 Start Clients (Teams)
 
-Open multiple terminals and run:
+Open four terminals and run:
 
 python3 client.py
 
-Enter username and start bidding.
+Enter team names:
+
+RCB
+CSK
+MI
+KKR
+Usage
+
+Start the auction server.
+
+Connect four team clients.
+
+Begin the auction.
+
+Teams place bids for players.
+
+Player sold after timeout if no new bids occur.
+
+Auction continues until all players are processed.
 
 Example:
 
-Enter username: Alice
-Enter bid amount: 100
-Example Auction Session
+PLAYER: Virat Kohli
+TYPE: batsman
+BASE PRICE: 200000
 
-Client 1:
+RCB -> 220000
+MI -> 250000
+RCB -> 300000
 
-Alice → 100
+SOLD to RCB for 300000
+Example Auction Result
+AUCTION COMPLETE
 
-Client 2:
+RCB
+Players: [Virat Kohli, Bumrah, Gill...]
 
-Bob → 200
+CSK
+Players: [...]
 
-Server broadcast:
+MI
+Players: [...]
 
-NEW HIGHEST BID: 200 by Bob
-
-When auction time expires:
-
-===== AUCTION ENDED =====
-Winner: Bob
-Winning Bid: 200
-Performance Evaluation
-
-The system was tested with multiple concurrent clients.
-
-Test scenario:
-
-Clients	Result
-1	Normal operation
-3	Real-time updates
-5+	Concurrent bidding handled successfully
-
-Observed characteristics:
-
-Low latency bid updates
-
-Reliable message delivery
-
-Stable server operation under multiple clients
-
-Failure Handling
-
-The system includes mechanisms for handling runtime failures:
-
-Failure	Handling Method
-Client disconnect	Client removed from active list
-Invalid bid input	Server rejects bid
-Network error	Connection safely closed
-Server shutdown	Final auction result displayed
+KKR
+Players: [...]
 Key Computer Networks Concepts Demonstrated
 
 TCP Socket Programming
 
-Secure Communication (SSL/TLS)
+Client–Server Architecture
 
-Client-Server Architecture
+SSL/TLS Secure Communication
 
 Concurrent Client Handling
 
-Thread Synchronization
+Real-Time Distributed Systems
 
 Reliable Data Transmission
-
-Time-Critical Distributed Systems
-
-Future Improvements
-
-Possible enhancements:
-
-Multiple auction items
-
-Bid timestamps
-
-User authentication
-
-Web interface for auction clients
-
-Auction extension for last-second bids
